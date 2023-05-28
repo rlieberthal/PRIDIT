@@ -1,3 +1,22 @@
+#' Calculate the PRIDIT scores for a ridit matrix
+#'
+#' This function takes a matrix of data and returns the matrix transformed 
+#' as ridit values.
+#'
+#' @param riditscores A matrix where the first column represents IDs.
+#'   The IDs uniquely identify each row in the matrix.
+#'   The remaining columns contain the ridit scores for each ID.
+#' @param id_vector A vector of IDs.
+#' @param weightvec A vector of PRIDIT weights.
+#' @return A data frame with the following columns:
+#'   \describe{
+#'     \item{ID}{The unique identifier for each row.}
+#'     \item{ScoreMatrix}{A matrix containing PRIDIT scores for each 
+#'     observation.}
+#'   }
+#' ridit(4)
+#' @export
+
 PRIDITscore <- function(riditscores,IDvector,weightvec)	{ # riditscores should have ID in the first column
   Bijmatrix <- data.matrix(riditscores[,2:ncol(riditscores)])
   Bijtrans <- t(Bijmatrix)
