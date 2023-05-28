@@ -1,3 +1,13 @@
+#' Calculate the ridit values for a matrix
+#'
+#' This function takes a matrix of data and returns the matrix transformed as ridit values.
+#'
+#' @allrawdata x A matrix with ID in the first column
+#' @Fmatmin The matrix of cumulative distribution function values 
+#' @Bij.data.frame The data frame containing the ID and ridit transformed matrix
+#' ridit(3)
+#' @export
+
 ridit <- function(allrawdata) { # allrawdata should have ID in the first column
   IDvector <- allrawdata[,1]
   rawdata <- data.matrix(allrawdata[,2:ncol(allrawdata)])
