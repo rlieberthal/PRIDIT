@@ -1,0 +1,15 @@
+Package: pridit
+Type: Package
+Title: Implements the PRIDIT Analysis System
+Version: 0.0.0.9000
+Author: Robert D. Lieberthal
+Maintainer: Robert D. Lieberthal <rliebert@utk.edu>
+Description: This package implements the PRIDIT scoring system of Brockett, et al., 2002.
+    It has three separate functions. One implements ridit scoring as originally
+    created by Bross, 1958 and modified by Brockett, et al., 2002. A second function creates a 
+    set of PRIDIT weights for each variable in a data set. A third function
+    applies those PRIDIT weights to the data to determine a PRIDIT score
+    from -1 to 1 for each observation. 
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
