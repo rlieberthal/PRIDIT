@@ -17,7 +17,6 @@ A data frame with the following columns:
     \item{ID}{The unique identifier for each row.}
     \item{DataMatrix}{A matrix containing additional data columns.}
   }
-ridit(2)
 }
 \description{
 This function takes a matrix of data and returns the matrix transformed 

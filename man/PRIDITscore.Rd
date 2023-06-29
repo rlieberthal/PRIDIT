@@ -4,16 +4,16 @@
 \alias{PRIDITscore}
 \title{Calculate the PRIDIT scores for a ridit matrix}
 \usage{
-PRIDITscore(riditscores, IDvector, weightvec)
+PRIDITscore(riditscores, id_vector, weightvec)
 }
 \arguments{
 \item{riditscores}{A matrix where the first column represents IDs.
 The IDs uniquely identify each row in the matrix.
-The remaining columns contain the ridit scores for each ID.}
-
-\item{weightvec}{A vector of PRIDIT weights.}
+The remaining columns contain the ridit scores for each ID. # Inline comment}
 
 \item{id_vector}{A vector of IDs.}
+
+\item{weightvec}{A vector of PRIDIT weights.}
 }
 \value{
 A data frame with the following columns:
@@ -22,7 +22,6 @@ A data frame with the following columns:
     \item{ScoreMatrix}{A matrix containing PRIDIT scores for each 
     observation.}
   }
-ridit(4)
 }
 \description{
 This function takes a matrix of data and returns the matrix transformed 

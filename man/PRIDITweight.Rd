@@ -17,7 +17,6 @@ A data frame with the following columns:
     \item{ID}{The unique identifier for each row.}
     \item{WeightMatrix}{A matrix containing PRIDIT weights for each variable.}
   }
-ridit(2)
 }
 \description{
 This function takes a matrix of data and returns PRIDIT weights for
