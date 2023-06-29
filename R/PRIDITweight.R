@@ -13,17 +13,39 @@
 #'   }
 #' @export
 PRIDITweight <- function(riditscores) { 
+  # Convert riditscores to matrix
   Bijmatrix <- data.matrix(riditscores[, 2:ncol(riditscores)])
+  
+  # Transpose Bijmatrix
   Bijtrans <- t(Bijmatrix)
+  
+  # Calculate Bijsq
   Bijsq <- Bijtrans %*% Bijmatrix
+  
+  # Calculate Bijss
   Bijss <- diag(Bijsq)
+  
+  # Calculate Bijsum
   Bijsum <- sqrt(Bijss)
+  
+  # Create summat matrix
   summat <- t(matrix(Bijsum, ncol(Bijmatrix), nrow(Bijmatrix)))
+  
+  # Normalize Bijmatrix by summat
   Bijnorm <- Bijmatrix / summat
+  
+  # Perform principal component analysis
   pc <- princomp(Bijmatrix, cor = TRUE)
+  
+  # Calculate maxeigval
   maxeigval <- (pc$sdev[1])^2
+  
+  # Extract the first principal component vector
   maxeigvec <- pc$load[, 1]
+  
+  # Calculate weightvec
   weightvec <- maxeigvec * pc$sdev[1]
-  # weightvec <- weightvec * -1	# PC problem - sign switch
+  
+  # Return the weightvec
   return(weightvec)
 }
