@@ -11,22 +11,19 @@
 #'     \item{ID}{The unique identifier for each row.}
 #'     \item{WeightMatrix}{A matrix containing PRIDIT weights for each variable.}
 #'   }
-#' ridit(2)
 #' @export
-
-
 PRIDITweight <- function(riditscores) { 
-  Bijmatrix <- data.matrix(riditscores[,2:ncol(riditscores)])
+  Bijmatrix <- data.matrix(riditscores[, 2:ncol(riditscores)])
   Bijtrans <- t(Bijmatrix)
   Bijsq <- Bijtrans %*% Bijmatrix
   Bijss <- diag(Bijsq)
   Bijsum <- sqrt(Bijss)
-  summat <- t(matrix(Bijsum,ncol(Bijmatrix),nrow(Bijmatrix)))
-  Bijnorm <- Bijmatrix/summat
-  pc <- princomp(Bijmatrix, cor=TRUE)	
+  summat <- t(matrix(Bijsum, ncol(Bijmatrix), nrow(Bijmatrix)))
+  Bijnorm <- Bijmatrix / summat
+  pc <- princomp(Bijmatrix, cor = TRUE)
   maxeigval <- (pc$sdev[1])^2
-  maxeigvec <- pc$load[,1]
-  weightvec <- maxeigvec*pc$sdev[1]
-  #	weightvec <- weightvec * -1		# PC problem - sign switch
-  weightvec
+  maxeigvec <- pc$load[, 1]
+  weightvec <- maxeigvec * pc$sdev[1]
+  # weightvec <- weightvec * -1	# PC problem - sign switch
+  return(weightvec)
 }
