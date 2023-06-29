@@ -1,6 +1,5 @@
 # PRIDIT
 PRIDIT packages for R
-Apologies for the confusion. Here's the updated version:
 
 # Project Name
 
