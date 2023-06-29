@@ -13,21 +13,29 @@
 #'   }
 #' @export
 ridit <- function(allrawdata) {
+  # Extract ID vector
   IDvector <- allrawdata[, 1]
+  
+  # Convert rawdata to matrix
   rawdata <- data.matrix(allrawdata[, 2:ncol(allrawdata)])
+  
+  # Initialize matrices
   Fmat <- matrix(0, nrow(rawdata), ncol(rawdata))
   Fmatmin <- matrix(0, nrow(rawdata), ncol(rawdata))
   Fmatplu <- matrix(0, nrow(rawdata), ncol(rawdata))
   bmat <- matrix(0, nrow(rawdata), ncol(rawdata))
   
+  # Compute Fmatplu and Fmatmin
   for (i in 1:ncol(rawdata)) {
     Fn <- ecdf(rawdata[, i]) 
     Fmatplu[, i] <- 1 - Fn(rawdata[, i])
     Fmatmin[, i] <- Fn(rawdata[, i] - 0.001)  # Make 0.001 the smallest possible increment!
   }
   
+  # Compute Bij
   Bij <- Fmatmin[, 1:ncol(rawdata)] - Fmatplu[, 1:ncol(rawdata)]
   
+  # Convert Bij to a data frame
   for (j in 1:ncol(Bij)) {
     Bij.df <- data.frame(Bij[, j])
     Bij.vec <- data.matrix(Bij.df)
@@ -35,6 +43,7 @@ ridit <- function(allrawdata) {
     Bij[, j] <- Bij.vec
   }
   
+  # Create Bij.data.frame with appropriate column names
   Bij.data.frame <- data.frame(Bij)
   colnames(Bij.data.frame) <- colnames(allrawdata[, 2:ncol(allrawdata)])
   Bij.data.frame <- data.frame(Claim.ID = IDvector, Bij.data.frame)
