@@ -5,7 +5,7 @@
 #'
 #' @param riditscores A matrix where the first column represents IDs.
 #'   The IDs uniquely identify each row in the matrix.
-#'   The remaining columns contain the ridit scores for each ID. # Inline comment
+#'   The remaining columns contain the ridit scores for each ID.
 #' @param id_vector A vector of IDs.
 #' @param weightvec A vector of PRIDIT weights.
 #' @return A data frame with the following columns:
@@ -15,7 +15,7 @@
 #'     observation.}
 #'   }
 #' @export
-PRIDITscore <- function(riditscores, id_vector, weightvec)	{
+PRIDITscore <- function(riditscores, id_vector, weightvec) {
   # riditscores should have ID in the first column
   # Convert riditscores to matrix
   Bijmatrix <- data.matrix(riditscores[,2:ncol(riditscores)])
@@ -61,7 +61,7 @@ PRIDITscore <- function(riditscores, id_vector, weightvec)	{
   results.mat[,1] <- id_vector
   results.mat[,2] <- scorevec
   
-  # Create results data frame
-  results <- data.frame(Claim.ID=IDvector,PRIDITscore=scorevec)
+  # Create results data frame - FIXED: changed IDvector to id_vector
+  results <- data.frame(Claim.ID=id_vector, PRIDITscore=scorevec)
   return(results)
 }
