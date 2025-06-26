@@ -11,7 +11,7 @@ You can install the package directly from GitHub:
 install.packages("devtools")
 
 # Install the PRIDIT package
-devtools::install_github("yourusername/pridit")
+devtools::install_github("rlieberthal/PRIDIT")
 ```
 
 ## Description
