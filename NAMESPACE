@@ -3,3 +3,5 @@
 export(PRIDITscore)
 export(PRIDITweight)
 export(ridit)
+importFrom(stats,ecdf)
+importFrom(stats,princomp)

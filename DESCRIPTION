@@ -21,3 +21,4 @@ RoxygenType: 7.2.3
 Depends: R (>= 4.0.0)
 Suggests: testthat (>= 3.0.0)
 NeedsCompilation: no
+RoxygenNote: 7.3.2

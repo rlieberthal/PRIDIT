@@ -7,18 +7,36 @@
 PRIDITweight(riditscores)
 }
 \arguments{
-\item{riditscores}{A matrix where the first column represents IDs.
+\item{riditscores}{A data frame where the first column represents IDs.
 The IDs uniquely identify each row in the matrix.
-The remaining columns contain the data for each ID.}
+The remaining columns contain the ridit scores for each ID.}
 }
 \value{
-A data frame with the following columns:
-  \describe{
-    \item{ID}{The unique identifier for each row.}
-    \item{WeightMatrix}{A matrix containing PRIDIT weights for each variable.}
-  }
+A numeric vector containing PRIDIT weights for each variable.
 }
 \description{
-This function takes a matrix of data and returns PRIDIT weights for
-each variable as a vector.
+This function takes a ridit-scored matrix and returns PRIDIT weights for
+each variable as a vector using Principal Component Analysis.
+}
+\examples{
+# Create sample data and calculate ridit scores first
+test_data <- data.frame(
+  ID = c("A", "B", "C", "D", "E"),
+  var1 = c(0.9, 0.85, 0.89, 1.0, 0.89),
+  var2 = c(0.99, 0.92, 0.90, 1.0, 0.93),
+  var3 = c(1.0, 0.99, 0.98, 1.0, 0.99)
+)
+
+# First calculate ridit scores
+ridit_result <- ridit(test_data)
+
+# Then calculate PRIDIT weights
+weights <- PRIDITweight(ridit_result)
+print(weights)
+
+}
+\references{
+Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002).
+Fraud classification using principal component analysis of RIDITs.
+Journal of Risk and Insurance, 69(3), 341-371.
 }
