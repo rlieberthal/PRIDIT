@@ -1,22 +1,22 @@
 Package: pridit
 Type: Package
-Title: Implements the PRIDIT Analysis System
-Version: 0.1.0
-Author: Robert D. Lieberthal
-Maintainer: Robert D. Lieberthal <rliebert@utk.edu>
-Description: This package implements the PRIDIT scoring system of Brockett, et al., 2002.
-    It has three separate functions. One implements ridit scoring as originally
-    created by Bross, 1958 and modified by Brockett, et al., 2002. A second function creates a 
-    set of PRIDIT weights for each variable in a data set. A third function
-    applies those PRIDIT weights to the data to determine a PRIDIT score
-    from -1 to 1 for each observation.
+Title: Principal Component Analysis Applied to Ridit Scoring
+Version: 1.0.0
+Authors@R: person("Robert D.", "Lieberthal", 
+                  email = "rlieberthal@gmail.com", 
+                  role = c("aut", "cre"))
+Maintainer: Robert D. Lieberthal <rlieberthal@gmail.com>
+Description: Implements the PRIDIT (Principal Component Analysis applied to 
+    RIDITs) scoring system described in Brockett et al. (2002) 
+    <doi:10.1111/1539-6975.00018>. Provides functions for ridit scoring 
+    originally developed by Bross (1958), calculating PRIDIT weights, and 
+    computing final PRIDIT scores for multivariate analysis of ordinal data.
 License: Apache License (>= 2)
+URL: https://github.com/rlieberthal/PRIDIT
+BugReports: https://github.com/rlieberthal/PRIDIT/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
-Depends: R (>= 3.5.0)
-Suggests: 
-    testthat (>= 3.0.0),
-    knitr,
-    rmarkdown
-VignetteBuilder: knitr
+RoxygenType: 7.2.3
+Depends: R (>= 4.0.0)
+Suggests: testthat (>= 3.0.0)
+NeedsCompilation: no
