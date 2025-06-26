@@ -1,19 +1,38 @@
 #' Calculate the PRIDIT scores for a ridit matrix
 #'
-#' This function takes a matrix of data and returns the matrix transformed 
-#' as ridit values.
+#' This function takes ridit scores and PRIDIT weights to calculate final
+#' PRIDIT scores for each observation.
 #'
-#' @param riditscores A matrix where the first column represents IDs.
+#' @param riditscores A data frame where the first column represents IDs.
 #'   The IDs uniquely identify each row in the matrix.
 #'   The remaining columns contain the ridit scores for each ID.
-#' @param id_vector A vector of IDs.
-#' @param weightvec A vector of PRIDIT weights.
-#' @return A data frame with the following columns:
-#'   \describe{
-#'     \item{ID}{The unique identifier for each row.}
-#'     \item{ScoreMatrix}{A matrix containing PRIDIT scores for each 
-#'     observation.}
-#'   }
+#' @param id_vector A vector of IDs corresponding to the observations.
+#' @param weightvec A numeric vector of PRIDIT weights (from PRIDITweight function).
+#' @return A data frame with two columns: "Claim.ID" containing the IDs and 
+#'   "PRIDITscore" containing the calculated PRIDIT scores (ranging from -1 to 1).
+#' @examples
+#' # Complete workflow example
+#' test_data <- data.frame(
+#'   ID = c("A", "B", "C", "D", "E"),
+#'   var1 = c(0.9, 0.85, 0.89, 1.0, 0.89),
+#'   var2 = c(0.99, 0.92, 0.90, 1.0, 0.93),
+#'   var3 = c(1.0, 0.99, 0.98, 1.0, 0.99)
+#' )
+#' 
+#' # Step 1: Calculate ridit scores
+#' ridit_result <- ridit(test_data)
+#' 
+#' # Step 2: Calculate PRIDIT weights
+#' weights <- PRIDITweight(ridit_result)
+#' 
+#' # Step 3: Calculate final PRIDIT scores
+#' final_scores <- PRIDITscore(ridit_result, test_data$ID, weights)
+#' print(final_scores)
+#' 
+#' @references 
+#' Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002).
+#' Fraud classification using principal component analysis of RIDITs.
+#' Journal of Risk and Insurance, 69(3), 341-371.
 #' @export
 PRIDITscore <- function(riditscores, id_vector, weightvec) {
   # riditscores should have ID in the first column
