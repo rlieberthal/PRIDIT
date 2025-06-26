@@ -1,16 +1,33 @@
 #' Calculate the ridit values for a matrix
 #'
 #' This function takes a matrix of data and returns the matrix transformed 
-#' as ridit values.
+#' as ridit values using the method developed by Bross (1958) and modified 
+#' by Brockett et al. (2002).
 #'
-#' @param allrawdata A matrix where the first column represents IDs.
+#' @param allrawdata A data frame where the first column represents IDs.
 #'   The IDs uniquely identify each row in the matrix.
-#'   The remaining columns contain the data for each ID.
-#' @return A data frame with the following columns:
-#'   \describe{
-#'     \item{ID}{The unique identifier for each row.}
-#'     \item{DataMatrix}{A matrix containing additional data columns.}
-#'   }
+#'   The remaining columns contain the numerical data for each ID.
+#' @return A data frame with the first column containing IDs (named "Claim.ID")
+#'   and the remaining columns containing ridit scores for each variable.
+#' @examples
+#' # Create sample data
+#' test_data <- data.frame(
+#'   ID = c("A", "B", "C", "D", "E"),
+#'   var1 = c(0.9, 0.85, 0.89, 1.0, 0.89),
+#'   var2 = c(0.99, 0.92, 0.90, 1.0, 0.93),
+#'   var3 = c(1.0, 0.99, 0.98, 1.0, 0.99)
+#' )
+#' 
+#' # Calculate ridit scores
+#' ridit_result <- ridit(test_data)
+#' print(ridit_result)
+#' 
+#' @references 
+#' Bross, I. D. (1958). How to use ridit analysis. Biometrics, 18-38.
+#' 
+#' Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002).
+#' Fraud classification using principal component analysis of RIDITs.
+#' Journal of Risk and Insurance, 69(3), 341-371.
 #' @export
 ridit <- function(allrawdata) {
   # Extract ID vector
