@@ -1,65 +1,75 @@
 # PRIDIT
-PRIDIT packages for R
 
-# Project Name
+An R package that implements the PRIDIT (Principal Component Analysis applied to RIDITs) analysis system as described in Brockett et al. (2002).
 
-The project provides three R scripts: `ridit.R`, `PRIDITweight.R`, and `PRIDITscore.R`.
+## Installation
 
-## Table of Contents
+You can install the package directly from GitHub:
 
-- [Description](#description)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+```r
+# Install devtools if you haven't already
+install.packages("devtools")
+
+# Install the PRIDIT package
+devtools::install_github("yourusername/pridit")
+```
 
 ## Description
 
-The project provides a set of R scripts for calculating and analyzing Ridit scores and PRIDIT (Principal Component Analysis applied to Ridit scores) scores for a given dataset.
+This package provides three main functions for calculating and analyzing Ridit scores and PRIDIT scores:
 
-- `ridit.R` - This script calculates the Ridit scores for a given dataset. Ridit analysis is a non-parametric method used to compare ordinal categorical variables across groups. The script takes a dataset as input and returns the Ridit scores for each observation.
+- **`ridit()`** - Calculates Ridit scores for a given dataset using the method developed by Bross (1958) and modified by Brockett et al. (2002)
+- **`PRIDITweight()`** - Applies Principal Component Analysis (PCA) to Ridit scores to calculate PRIDIT weights for each variable
+- **`PRIDITscore()`** - Calculates final PRIDIT scores using the weights and ridit scores
 
-- `PRIDITweight.R` - This script applies Principal Component Analysis (PCA) to Ridit scores and calculates the weighted PRIDIT scores for a given dataset. The Ridit scores represent the ordinal categorical variables. The script takes a dataset and the weights for each Ridit score as input and returns the weighted PRIDIT scores.
+## Quick Start
 
-- `PRIDITscore.R` - This script applies Principal Component Analysis (PCA) to Ridit scores and calculates the PRIDIT scores for a given dataset. The Ridit scores represent the ordinal categorical variables. The script takes a dataset as input and returns the PRIDIT scores.
+```r
+library(pridit)
 
-## Usage
+# Load your data (first column should be IDs)
+data <- data.frame(
+  ID = c("A", "B", "C", "D", "E"),
+  var1 = c(0.9, 0.85, 0.89, 1.0, 0.89),
+  var2 = c(0.99, 0.92, 0.90, 1.0, 0.93),
+  var3 = c(1.0, 0.99, 0.98, 1.0, 0.99)
+)
 
-To use the scripts, follow these steps:
+# Step 1: Calculate ridit scores
+ridit_scores <- ridit(data)
 
-1. Load the required R packages (if any) using the `library()` function.
+# Step 2: Calculate PRIDIT weights
+weights <- PRIDITweight(ridit_scores)
 
-2. Source the script(s) you need using the `source()` function. For example:
+# Step 3: Calculate final PRIDIT scores
+final_scores <- PRIDITscore(ridit_scores, data$ID, weights)
 
-```R
-source("ridit.R")
+print(final_scores)
 ```
 
-3. Call the relevant function(s) from the script(s) with the appropriate arguments. For example:
+## Data Format
 
-```R
-ridit_scores <- calculate_ridit(dataset)
-```
+Your input data should be structured as:
+- **First column**: Unique identifiers (IDs)
+- **Remaining columns**: Numerical variables to be analyzed
+- All variables should be numeric (convert factors/categories to numeric values like 0,1 or 1,2,3,4,5)
 
-4. Use the results returned by the function(s) as needed in your analysis or further processing.
+## Output
 
-## Contributing
+The final PRIDIT scores range from -1 to 1, where:
+- The **sign** indicates class identity
+- The **magnitude** indicates the intensity of that identity
 
-Contributions to this project are welcome. If you want to contribute, please follow these steps:
+## References
 
-1. Fork the repository.
-
-2. Create a new branch for your feature or bug fix.
-
-3. Make your changes and commit them with descriptive commit messages.
-
-4. Push your changes to your forked repository.
-
-5. Submit a pull request to the main repository, explaining the changes you have made.
+- Bross, I. D. (1958). How to use ridit analysis. *Biometrics*, 18-38.
+- Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002). Fraud classification using principal component analysis of RIDITs. *Journal of Risk and Insurance*, 69(3), 341-371.
+- Lieberthal, R. D. (2008). Hospital quality: A PRIDIT approach. *Health services research*, 43(3), 988-1005.
 
 ## License
 
-This project is licensed under the [Apache 2.0 License](LICENSE). You are free to use, modify, and distribute the code in accordance with the terms of the license.
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
----
+## Contributing
 
-Feel free to customize this README file according to your project's specific details and requirements.
+Contributions are welcome! Please feel free to submit a Pull Request.
