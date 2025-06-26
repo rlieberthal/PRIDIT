@@ -1,11 +1,18 @@
-# PRIDIT
+# pridit
+
+[![CRAN status](https://www.r-pkg.org/badges/version/pridit)](https://CRAN.R-project.org/package=pridit)
+[![R-CMD-check](https://github.com/rlieberthal/PRIDIT/workflows/R-CMD-check/badge.svg)](https://github.com/rlieberthal/PRIDIT/actions)
 
 An R package that implements the PRIDIT (Principal Component Analysis applied to RIDITs) analysis system as described in Brockett et al. (2002).
 
 ## Installation
 
-You can install the package directly from GitHub:
+### From CRAN (recommended):
+```r
+install.packages("pridit")
+```
 
+### From GitHub (development version):
 ```r
 # Install devtools if you haven't already
 install.packages("devtools")
@@ -62,8 +69,8 @@ The final PRIDIT scores range from -1 to 1, where:
 
 ## References
 
-- Bross, I. D. (1958). How to use ridit analysis. *Biometrics*, 18-38.
-- Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002). Fraud classification using principal component analysis of RIDITs. *Journal of Risk and Insurance*, 69(3), 341-371.
+- Bross, I. D. (1958). How to use ridit analysis. *Biometrics*, 14(1), 18-38. doi:10.2307/2527727
+- Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002). Fraud classification using principal component analysis of RIDITs. *Journal of Risk and Insurance*, 69(3), 341-371. doi:10.1111/1539-6975.00018
 - Lieberthal, R. D. (2008). Hospital quality: A PRIDIT approach. *Health services research*, 43(3), 988-1005.
 
 ## License
