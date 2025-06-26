@@ -1,6 +1,6 @@
 # pridit
 
-[![CRAN status](https://www.r-pkg.org/badges/version/pridit)](https://CRAN.R-project.org/package=pridit)
+<!-- [![CRAN status](https://www.r-pkg.org/badges/version/pridit)](https://CRAN.R-project.org/package=pridit) -->
 [![R-CMD-check](https://github.com/rlieberthal/PRIDIT/workflows/R-CMD-check/badge.svg)](https://github.com/rlieberthal/PRIDIT/actions)
 
 An R package that implements the PRIDIT (Principal Component Analysis applied to RIDITs) analysis system as described in Brockett et al. (2002).
