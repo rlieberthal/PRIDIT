@@ -41,5 +41,5 @@ Bross, I. D. (1958). How to use ridit analysis. Biometrics, 14(1), 18-38.
 Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002).
 Fraud classification using principal component analysis of RIDITs.
 Journal of Risk and Insurance, 69(3), 341-371.
-\doi{10.1111/1539-6975.00018}
+\doi{10.1111/1539-6975.00027}
 }

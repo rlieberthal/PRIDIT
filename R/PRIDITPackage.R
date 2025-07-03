@@ -3,6 +3,5 @@
 #' The pridit package provides functions for implementing the PRIDIT
 #' (Principal Component Analysis applied to RIDITs) scoring system.
 #'
-#' @docType package
 #' @name pridit
-NULL
+"_PACKAGE"
