@@ -74,8 +74,7 @@ The final PRIDIT scores range from -1 to 1, where:
 - Lieberthal, R. D. (2008). Hospital quality: A PRIDIT approach. *Health services research*, 43(3), 988-1005.
 
 ## License
-
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache License 2.0.
 
 ## Contributing
 
