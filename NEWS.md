@@ -1,3 +1,10 @@
+# pridit 1.0-3
+
+## Changes for CRAN resubmission
+
+* Fixed invalid LICENSE URI in README.md
+* All issues from previous submissions have been addressed
+
 # pridit 1.0-2
 
 ## Changes for CRAN resubmission
