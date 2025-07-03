@@ -12,7 +12,7 @@ Description: Implements the 'PRIDIT' (Principal Component Analysis applied to
     originally developed by 'Bross' (1958) <doi:10.2307/2527727>, calculating 
     'PRIDIT' weights, and computing final 'PRIDIT' scores for multivariate 
     analysis of ordinal data.
-License: Apache-2.0
+License: Apache License (>= 2)
 URL: https://github.com/rlieberthal/PRIDIT
 BugReports: https://github.com/rlieberthal/PRIDIT/issues
 Encoding: UTF-8
