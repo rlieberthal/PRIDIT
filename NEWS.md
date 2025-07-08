@@ -1,3 +1,11 @@
+# pridit 1.0-4
+
+## Changes for CRAN resubmission
+
+* Removed unnecessary single quotes from author names in DESCRIPTION
+* Fixed spacing issues in DESCRIPTION field
+* All issues from previous submissions have been addressed
+
 # pridit 1.0-3
 
 ## Changes for CRAN resubmission
