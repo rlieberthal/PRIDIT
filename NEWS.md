@@ -1,3 +1,24 @@
+# pridit 1.1.0
+
+## New features
+
+* Added comprehensive vignette "Introduction to PRIDIT Analysis" demonstrating the methodology with practical examples
+* Enhanced documentation with detailed workflow examples  
+* Added support for healthcare quality assessment and fraud detection use cases
+
+## Minor improvements
+
+* Updated package dependencies to support vignettes
+* Improved README with CRAN badge
+
+# pridit 1.0-4
+
+## Changes for CRAN resubmission
+
+* Removed unnecessary single quotes from author names in DESCRIPTION
+* Fixed spacing issues in DESCRIPTION field
+* All issues from previous submissions have been addressed
+
 # pridit 1.0-4
 
 ## Changes for CRAN resubmission
