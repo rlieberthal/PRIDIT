@@ -1,5 +1,5 @@
 ## Test environments
-* Local: macOS, R 4.3.0
+* Local: macOS, R 4.5.1
 * GitHub Actions: ubuntu-latest (R-devel, R-release), macOS-latest (R-release), windows-latest (R-release)
 * R-hub: Windows Server 2022, Ubuntu Linux 20.04.1 LTS, Fedora Linux
 * win-builder: R-devel and R-release
@@ -10,23 +10,24 @@
 
 ## Downstream dependencies
 
-This package is now on CRAN with no downstream dependencies.
+There are currently no downstream dependencies for this package.
 
-## Changes since CRAN release
+## Changes since version 1.0-4
 
-This is a maintenance update to the package that is already on CRAN:
+This is a minor update (1.0-4 → 1.1.0) that adds significant value for users:
 
-* Added comprehensive vignette demonstrating PRIDIT methodology
-* Updated CRAN badge in README
-* Minor documentation improvements
-* Added support for vignettes in DESCRIPTION
+* Added comprehensive vignette "Introduction to PRIDIT Analysis" with practical examples
+* Enhanced documentation with detailed workflow demonstrations
+* Added healthcare quality assessment and fraud detection use cases
+* Improved user accessibility with step-by-step tutorials
+* No breaking changes to existing functionality
 
 ## Comments
 
-This package implements the PRIDIT analysis system for ordinal data analysis, 
-providing R implementations of established statistical methods from Bross (1958) 
-and Brockett et al. (2002). The package includes comprehensive documentation, 
-working examples, vignettes, and a full test suite.
+This update adds a detailed vignette that demonstrates the PRIDIT methodology 
+with real-world examples, making the package much more accessible to users.
+The vignette includes practical applications in healthcare quality assessment 
+and fraud detection, with complete workflow examples.
 
-The package has been successfully released on CRAN and this update adds 
-additional documentation and user resources.
+The package implements established statistical methods from Bross (1958) 
+and Brockett et al. (2002) and maintains full backward compatibility.
