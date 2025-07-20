@@ -1,7 +1,7 @@
 Package: pridit
 Type: Package
 Title: Principal Component Analysis Applied to Ridit Scoring
-Version: 1.0-4
+Version: 1.1.0
 Authors@R: person("Robert D.", "Lieberthal", 
                   email = "rlieberthal@gmail.com", 
                   role = c("aut", "cre"))
