@@ -2,41 +2,35 @@
 % Please edit documentation in R/PRIDITweight.R
 \name{PRIDITweight}
 \alias{PRIDITweight}
-\title{Calculate the PRIDIT weights for a ridit matrix}
+\title{Compute PRIDIT weights}
 \usage{
-PRIDITweight(riditscores)
+PRIDITweight(ridit_data)
 }
 \arguments{
-\item{riditscores}{A data frame where the first column represents IDs.
-The IDs uniquely identify each row in the matrix.
-The remaining columns contain the ridit scores for each ID.}
+\item{ridit_data}{A data frame returned by \code{\link{ridit}}: first column
+is the ID, remaining columns are ridit scores.}
 }
 \value{
-A numeric vector containing PRIDIT weights for each variable.
+A named numeric vector of PRIDIT weights, one per indicator column.
 }
 \description{
-This function takes a ridit-scored matrix and returns PRIDIT weights for
-each variable as a vector using Principal Component Analysis.
+Computes the PRIDIT weight vector from a ridit-scored data frame.  Weights
+are the loadings of the first principal component of the ridit matrix,
+scaled by the column norms of that matrix.  The sign of the weight vector
+is arbitrary (a property of PCA); pass the result to \code{\link{pridit}}
+rather than using this function directly if automatic sign correction is
+desired.
 }
 \examples{
-# Create sample data and calculate ridit scores first
-test_data <- data.frame(
-  ID = c("A", "B", "C", "D", "E"),
-  var1 = c(0.9, 0.85, 0.89, 1.0, 0.89),
-  var2 = c(0.99, 0.92, 0.90, 1.0, 0.93),
-  var3 = c(1.0, 0.99, 0.98, 1.0, 0.99)
+dat <- data.frame(
+  id = c("A", "B", "C", "D", "E"),
+  x1 = c(0.90, 0.85, 0.89, 1.00, 0.89),
+  x2 = c(0.99, 0.92, 0.90, 1.00, 0.93)
 )
-
-# First calculate ridit scores
-ridit_result <- ridit(test_data)
-
-# Then calculate PRIDIT weights
-weights <- PRIDITweight(ridit_result)
-print(weights)
+rs  <- ridit(dat)
+PRIDITweight(rs)
 
 }
-\references{
-Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002).
-Fraud classification using principal component analysis of RIDITs.
-Journal of Risk and Insurance, 69(3), 341-371.
+\seealso{
+\code{\link{ridit}}, \code{\link{PRIDITscore}}, \code{\link{pridit}}
 }

@@ -2,44 +2,50 @@
 % Please edit documentation in R/ridit.R
 \name{ridit}
 \alias{ridit}
-\title{Calculate the ridit values for a matrix}
+\title{Compute ridit scores}
 \usage{
-ridit(allrawdata)
+ridit(data)
 }
 \arguments{
-\item{allrawdata}{A data frame where the first column represents IDs.
-The IDs uniquely identify each row in the matrix.
-The remaining columns contain the numerical data for each ID.}
+\item{data}{A data frame whose first column is an ID and whose remaining
+columns are numeric indicators.}
 }
 \value{
-A data frame with the first column containing IDs (named "Claim.ID")
-  and the remaining columns containing ridit scores for each variable.
+A data frame of the same shape as \code{data} with numeric columns
+  replaced by their ridit scores.  The ID column is preserved as-is.
 }
 \description{
-This function takes a matrix of data and returns the matrix transformed
-as ridit values using the method developed by Bross (1958) and modified
-by Brockett et al. (2002).
+Transforms a data frame of numeric indicators into ridit scores on the
+interval \eqn{(-1, 1)} using the empirical cumulative distribution of each
+column across the reference population.  A score of zero indicates a value
+exactly at the median; positive scores indicate above-median values.
+}
+\details{
+The ridit score for observation \eqn{i} on indicator \eqn{j} is
+\deqn{B_{ij} = F_j(x_{ij} - \varepsilon) - [1 - F_j(x_{ij})]}
+where \eqn{F_j} is the empirical CDF of column \eqn{j} and \eqn{\varepsilon}
+is a small constant that makes the lower CDF strictly left-continuous.
+This formulation is robust to ties and requires no parametric assumptions.
+
+Categorical indicators should be expanded into binary dummy columns before
+calling \code{ridit()}; each dummy then receives its own ridit transformation
+and PRIDIT weight, with sign determined by the data rather than by the
+analyst.
 }
 \examples{
-# Create sample data
-test_data <- data.frame(
-  ID = c("A", "B", "C", "D", "E"),
-  var1 = c(0.9, 0.85, 0.89, 1.0, 0.89),
-  var2 = c(0.99, 0.92, 0.90, 1.0, 0.93),
-  var3 = c(1.0, 0.99, 0.98, 1.0, 0.99)
+dat <- data.frame(
+  id = c("A", "B", "C", "D", "E"),
+  x1 = c(0.90, 0.85, 0.89, 1.00, 0.89),
+  x2 = c(0.99, 0.92, 0.90, 1.00, 0.93)
 )
-
-# Calculate ridit scores
-ridit_result <- ridit(test_data)
-print(ridit_result)
+ridit(dat)
 
 }
 \references{
-Bross, I. D. (1958). How to use ridit analysis. Biometrics, 14(1), 18-38.
-\doi{10.2307/2527727}
+Bross, I. D. J. (1958). How to use ridit analysis. \emph{Biometrics},
+\strong{14}(1), 18--38.
 
-Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002).
-Fraud classification using principal component analysis of RIDITs.
-Journal of Risk and Insurance, 69(3), 341-371.
-\doi{10.1111/1539-6975.00027}
+Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M.
+(2002). Fraud classification using principal component analysis of RIDITs.
+\emph{Journal of Risk and Insurance}, \strong{69}(3), 341--371.
 }

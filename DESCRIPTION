@@ -4,8 +4,7 @@ Title: PRIDIT Scoring: Principal Component Analysis Applied to Ridit Scores
 Version: 1.1.0
 Authors@R: person("Robert D.", "Lieberthal",
                   email   = "rlieberthal@gmail.com",
-                  role    = c("aut", "cre"),
-                  comment = c(ORCID = "0000-0000-0000-0000"))
+                  role    = c("aut", "cre"))
 Description:
     Implements PRIDIT (Principal Component Analysis applied to RIDITs), an
     unsupervised, nonparametric method for aggregating ordinal, categorical,
@@ -29,19 +28,20 @@ URL: https://github.com/rlieberthal/PRIDIT
 BugReports: https://github.com/rlieberthal/PRIDIT/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.2
 Depends:
     R (>= 4.0.0)
 Imports:
+    ggplot2 (>= 3.4.0),
+    rlang,
     stats,
     utils
 Suggests:
-    ggplot2 (>= 3.4.0),
+    generics,
     patchwork,
     recipes (>= 1.0.0),
-    rlang,
     testthat (>= 3.0.0),
     knitr,
     rmarkdown
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0

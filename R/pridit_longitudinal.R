@@ -186,6 +186,7 @@ print.pridit_longitudinal <- function(x, ...) {
 #'   panel (by mean absolute weight across periods).  Default 10.
 #' @param ... Ignored.
 #' @return A \code{ggplot} object (invisibly).
+#' @importFrom rlang .data
 #' @export
 autoplot.pridit_longitudinal <- function(object, top_n = 10L, ...) {
   if (!requireNamespace("ggplot2", quietly = TRUE))

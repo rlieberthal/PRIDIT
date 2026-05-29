@@ -145,6 +145,7 @@ print.pridit_boot <- function(x, top_n = 10L, ...) {
 #'   Default 20.
 #' @param ... Ignored.
 #' @return A \code{ggplot} object (invisibly).
+#' @importFrom rlang .data
 #' @export
 autoplot.pridit_boot <- function(object, top_n = 20L, ...) {
   if (!requireNamespace("ggplot2", quietly = TRUE))

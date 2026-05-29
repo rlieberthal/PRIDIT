@@ -168,7 +168,11 @@ summary.pridit <- function(object, ...) {
   invisible(object)
 }
 
-#' @rdname pridit
+#' Extract PRIDIT weights
+#'
+#' @param object A \code{"pridit"} object.
+#' @param ... Ignored.
+#' @return Named numeric vector of PRIDIT weights.
 #' @export
 coef.pridit <- function(object, ...) object$weights
 
@@ -184,6 +188,7 @@ coef.pridit <- function(object, ...) object$weights
 #' @param ... Ignored.
 #' @return A \code{ggplot} object (invisibly).
 #' @importFrom ggplot2 autoplot
+#' @importFrom rlang .data
 #' @export
 autoplot.pridit <- function(object, top_n = 20L, ...) {
   if (!requireNamespace("ggplot2", quietly = TRUE))

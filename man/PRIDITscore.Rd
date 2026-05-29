@@ -2,49 +2,40 @@
 % Please edit documentation in R/PRIDITscore.R
 \name{PRIDITscore}
 \alias{PRIDITscore}
-\title{Calculate the PRIDIT scores for a ridit matrix}
+\title{Compute PRIDIT scores}
 \usage{
-PRIDITscore(riditscores, id_vector, weightvec)
+PRIDITscore(ridit_data, id_vector, weight_vec)
 }
 \arguments{
-\item{riditscores}{A data frame where the first column represents IDs.
-The IDs uniquely identify each row in the matrix.
-The remaining columns contain the ridit scores for each ID.}
+\item{ridit_data}{A data frame returned by \code{\link{ridit}}: first column
+is the ID, remaining columns are ridit scores.}
 
-\item{id_vector}{A vector of IDs corresponding to the observations.}
+\item{id_vector}{A vector of observation identifiers (same length and order
+as the rows of \code{ridit_data}).}
 
-\item{weightvec}{A numeric vector of PRIDIT weights (from PRIDITweight function).}
+\item{weight_vec}{A named numeric vector of PRIDIT weights returned by
+\code{\link{PRIDITweight}}.}
 }
 \value{
-A data frame with two columns: "Claim.ID" containing the IDs and
-  "PRIDITscore" containing the calculated PRIDIT scores (ranging from -1 to 1).
+A data frame with columns \code{id} and \code{PRIDITscore}.
 }
 \description{
-This function takes ridit scores and PRIDIT weights to calculate final
-PRIDIT scores for each observation.
+Applies a vector of PRIDIT weights to a ridit-scored data frame and returns
+a composite score in \eqn{(-1, 1)} for each observation.  The score is
+normalised by the largest eigenvalue so that the mean score is zero by
+construction.
 }
 \examples{
-# Complete workflow example
-test_data <- data.frame(
-  ID = c("A", "B", "C", "D", "E"),
-  var1 = c(0.9, 0.85, 0.89, 1.0, 0.89),
-  var2 = c(0.99, 0.92, 0.90, 1.0, 0.93),
-  var3 = c(1.0, 0.99, 0.98, 1.0, 0.99)
+dat <- data.frame(
+  id = c("A", "B", "C", "D", "E"),
+  x1 = c(0.90, 0.85, 0.89, 1.00, 0.89),
+  x2 = c(0.99, 0.92, 0.90, 1.00, 0.93)
 )
-
-# Step 1: Calculate ridit scores
-ridit_result <- ridit(test_data)
-
-# Step 2: Calculate PRIDIT weights
-weights <- PRIDITweight(ridit_result)
-
-# Step 3: Calculate final PRIDIT scores
-final_scores <- PRIDITscore(ridit_result, test_data$ID, weights)
-print(final_scores)
+rs  <- ridit(dat)
+wts <- PRIDITweight(rs)
+PRIDITscore(rs, dat$id, wts)
 
 }
-\references{
-Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002).
-Fraud classification using principal component analysis of RIDITs.
-Journal of Risk and Insurance, 69(3), 341-371.
+\seealso{
+\code{\link{ridit}}, \code{\link{PRIDITweight}}, \code{\link{pridit}}
 }

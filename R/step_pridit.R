@@ -66,7 +66,7 @@ step_pridit <- function(recipe, ...,
   recipes::add_step(
     recipe,
     step_pridit_new(
-      terms           = recipes::enquos(...),
+      terms           = rlang::enquos(...),
       role            = role,
       trained         = trained,
       score_name      = score_name,
@@ -100,7 +100,7 @@ step_pridit_new <- function(terms, role, trained, score_name,
   )
 }
 
-#' @export
+#' @exportS3Method recipes::prep
 prep.step_pridit <- function(x, training, info = NULL, ...) {
   col_names <- recipes::recipes_eval_select(x$terms, training, info)
 
@@ -149,7 +149,7 @@ prep.step_pridit <- function(x, training, info = NULL, ...) {
   )
 }
 
-#' @export
+#' @exportS3Method recipes::bake
 bake.step_pridit <- function(object, new_data, ...) {
   col_names <- names(object$weights)
   mat       <- data.matrix(new_data[, col_names, drop = FALSE])
@@ -179,7 +179,7 @@ print.step_pridit <- function(x, width = max(20, options()$width - 35), ...) {
   invisible(x)
 }
 
-#' @export
+#' @exportS3Method generics::tidy
 tidy.step_pridit <- function(x, ...) {
   if (x$trained) {
     data.frame(
