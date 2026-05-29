@@ -1,0 +1,251 @@
+---
+title: "Introduction to PRIDIT Analysis"
+author: "Robert D. Lieberthal"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to PRIDIT Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction to PRIDIT Analysis
+
+The **pridit** package implements the PRIDIT (Principal Component Analysis applied to RIDITs) methodology, a powerful technique for analyzing ordinal data and detecting patterns in multivariate datasets. This vignette provides a comprehensive introduction to the methodology and demonstrates its application using the package functions.
+
+## What is PRIDIT?
+
+PRIDIT combines two statistical techniques:
+
+1. **Ridit Analysis**: Originally developed by Bross (1958), ridit analysis transforms ordinal data into a scale from 0 to 1, making it suitable for further statistical analysis.
+
+2. **Principal Component Analysis (PCA)**: Applied to the ridit scores to identify the most important underlying factors and create composite scores.
+
+The resulting PRIDIT scores provide a single measure that captures the most significant variation in your data, making it particularly useful for:
+
+- Quality assessment and ranking
+- Fraud detection
+- Performance evaluation
+- Risk assessment
+- Any application involving multiple ordinal variables
+
+## The PRIDIT Methodology
+
+The PRIDIT process involves three main steps:
+
+### Step 1: Calculate Ridit Scores
+Ridit scores transform your raw data into a standardized form based on the empirical distribution of each variable. For each observation and variable, the ridit score represents the probability that a randomly selected observation would have a lower value.
+
+### Step 2: Calculate PRIDIT Weights
+Using Principal Component Analysis on the ridit scores, we identify the linear combination of variables that explains the most variance in the data. The weights represent the importance of each variable in this optimal combination.
+
+### Step 3: Calculate Final PRIDIT Scores
+The final PRIDIT scores are computed by applying the weights to the ridit scores, resulting in a single score for each observation that ranges from -1 to 1.
+
+## Package Functions
+
+The **pridit** package provides three main functions:
+
+- `ridit()`: Calculates ridit scores for your data
+- `PRIDITweight()`: Computes PRIDIT weights using PCA
+- `PRIDITscore()`: Calculates final PRIDIT scores
+
+## Basic Example
+
+Let's start with a simple example using healthcare quality data:
+
+```{r basic_example}
+library(pridit)
+
+# Create sample healthcare quality data
+healthcare_data <- data.frame(
+  Hospital_ID = c("A", "B", "C", "D", "E"),
+  Smoking_cessation = c(0.9, 0.85, 0.89, 1.0, 0.89),
+  ACE_Inhibitor = c(0.99, 0.92, 0.90, 1.0, 0.93),
+  Proper_Antibiotic = c(1.0, 0.99, 0.98, 1.0, 0.99)
+)
+
+print(healthcare_data)
+```
+
+### Step 1: Calculate Ridit Scores
+
+```{r ridit_step}
+# Calculate ridit scores
+ridit_scores <- ridit(healthcare_data)
+print(ridit_scores)
+```
+
+The ridit scores show how each hospital performs relative to the others on each quality measure. Values closer to 1 indicate better performance, while values closer to -1 indicate poorer performance.
+
+### Step 2: Calculate PRIDIT Weights
+
+```{r weights_step}
+# Calculate PRIDIT weights
+weights <- PRIDITweight(ridit_scores)
+print(weights)
+```
+
+The weights tell us the relative importance of each variable in the overall quality assessment. Variables with larger absolute weights contribute more to the final score.
+
+### Step 3: Calculate Final PRIDIT Scores
+
+```{r final_scores}
+# Calculate final PRIDIT scores
+final_scores <- PRIDITscore(ridit_scores, healthcare_data$Hospital_ID, weights)
+print(final_scores)
+```
+
+The final PRIDIT scores provide a single quality measure for each hospital. Positive scores indicate above-average quality, while negative scores indicate below-average quality.
+
+## Using the Built-in Test Dataset
+
+The package includes a test dataset that you can use to explore the functionality:
+
+```{r test_dataset}
+# Load the test dataset
+data(test)
+print(test)
+
+# Run the complete analysis
+ridit_result <- ridit(test)
+weights <- PRIDITweight(ridit_result)
+final_scores <- PRIDITscore(ridit_result, test$ID, weights)
+
+print(final_scores)
+```
+
+## Interpreting PRIDIT Scores
+
+PRIDIT scores range from -1 to 1 and have two important characteristics:
+
+1. **Sign**: Indicates class membership
+   - Positive scores: Above-average performers
+   - Negative scores: Below-average performers
+
+2. **Magnitude**: Indicates the strength of that classification
+   - Scores closer to ±1 are more extreme
+   - Scores closer to 0 are more average
+
+The scores are also multiplicative, meaning a score of 0.6 indicates twice the strength of a score of 0.3.
+
+## Practical Applications
+
+### Quality Assessment
+PRIDIT is particularly useful for combining multiple quality indicators into a single score:
+
+```{r quality_example}
+# Hospital quality assessment example
+hospital_quality <- data.frame(
+  Hospital = paste0("Hospital_", 1:10),
+  Mortality_Rate = c(0.02, 0.03, 0.01, 0.04, 0.02, 0.03, 0.01, 0.02, 0.05, 0.01),
+  Readmission_Rate = c(0.10, 0.12, 0.08, 0.15, 0.09, 0.11, 0.07, 0.10, 0.16, 0.08),
+  Patient_Satisfaction = c(8.5, 7.2, 9.1, 6.8, 8.0, 7.5, 9.3, 8.2, 6.5, 9.0),
+  Safety_Score = c(85, 78, 92, 70, 82, 79, 94, 86, 68, 90)
+)
+
+# Note: For this example, we'll need to invert mortality and readmission rates
+# since lower values indicate better quality
+hospital_quality$Mortality_Rate <- 1 - hospital_quality$Mortality_Rate
+hospital_quality$Readmission_Rate <- 1 - hospital_quality$Readmission_Rate
+
+# Calculate PRIDIT scores
+ridit_scores <- ridit(hospital_quality)
+weights <- PRIDITweight(ridit_scores)
+quality_scores <- PRIDITscore(ridit_scores, hospital_quality$Hospital, weights)
+
+# Sort by PRIDIT score
+quality_ranking <- quality_scores[order(quality_scores$PRIDITscore, decreasing = TRUE), ]
+print(quality_ranking)
+```
+
+### Variable Importance Analysis
+
+The PRIDIT weights can help identify which variables are most important for distinguishing between high and low performers:
+
+```{r variable_importance}
+# Create a data frame showing variable importance
+variable_names <- colnames(hospital_quality)[-1]  # Exclude ID column
+importance_df <- data.frame(
+  Variable = variable_names,
+  Weight = weights,
+  Abs_Weight = abs(weights)
+)
+
+# Sort by absolute weight to see most important variables
+importance_df <- importance_df[order(importance_df$Abs_Weight, decreasing = TRUE), ]
+print(importance_df)
+```
+
+## Best Practices
+
+### Data Preparation
+1. **First column must be IDs**: Ensure your data frame has unique identifiers in the first column
+2. **Numeric variables only**: Convert categorical variables to numeric (e.g., 1, 2, 3, 4, 5 for Likert scales)
+3. **Handle missing values**: Consider imputation or removal of cases with missing data
+4. **Consider directionality**: Ensure all variables are coded so higher values represent "better" outcomes
+
+### Interpretation Guidelines
+1. **Relative comparison**: PRIDIT scores are relative to your dataset - they don't have absolute meaning
+2. **Sample size**: Ensure adequate sample size for stable results
+3. **Variable selection**: Include theoretically relevant variables that measure the construct of interest
+4. **Validation**: Consider using outcomes data to validate your PRIDIT scores when possible
+
+## Advanced Example: Longitudinal Analysis
+
+PRIDIT can be particularly useful for tracking changes over time:
+
+```{r longitudinal_example}
+# Simulate hospital performance over two time periods
+hospitals <- paste0("Hospital_", 1:5)
+
+# Time 1 data
+time1_data <- data.frame(
+  Hospital = hospitals,
+  Quality_A = c(0.85, 0.90, 0.78, 0.92, 0.88),
+  Quality_B = c(0.82, 0.85, 0.80, 0.88, 0.84),
+  Quality_C = c(0.90, 0.87, 0.85, 0.91, 0.86)
+)
+
+# Time 2 data
+time2_data <- data.frame(
+  Hospital = hospitals,
+  Quality_A = c(0.88, 0.91, 0.82, 0.93, 0.85),
+  Quality_B = c(0.85, 0.87, 0.83, 0.89, 0.82),
+  Quality_C = c(0.92, 0.88, 0.87, 0.93, 0.88)
+)
+
+# Calculate PRIDIT scores for both time periods
+time1_ridit <- ridit(time1_data)
+time1_weights <- PRIDITweight(time1_ridit)
+time1_scores <- PRIDITscore(time1_ridit, time1_data$Hospital, time1_weights)
+
+time2_ridit <- ridit(time2_data)
+time2_weights <- PRIDITweight(time2_ridit)
+time2_scores <- PRIDITscore(time2_ridit, time2_data$Hospital, time2_weights)
+
+# Combine results for comparison
+longitudinal_results <- merge(time1_scores, time2_scores, by = "Claim.ID", suffixes = c("_Time1", "_Time2"))
+longitudinal_results$Change <- longitudinal_results$PRIDITscore_Time2 - longitudinal_results$PRIDITscore_Time1
+
+print(longitudinal_results)
+```
+
+## Conclusion
+
+The PRIDIT methodology provides a powerful approach for analyzing multivariate ordinal data and creating meaningful composite scores. The **pridit** package makes this methodology accessible through simple, well-documented functions that can be easily integrated into your analysis workflow.
+
+For more information about the theoretical foundations of PRIDIT, see the references below.
+
+## References
+
+- Bross, I. D. (1958). How to use ridit analysis. *Biometrics*, 14(1), 18-38.
+- Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002). Fraud classification using principal component analysis of RIDITs. *Journal of Risk and Insurance*, 69(3), 341-371.
+- Lieberthal, R. D. (2008). Hospital quality: A PRIDIT approach. *Health Services Research*, 43(3), 988-1005.
