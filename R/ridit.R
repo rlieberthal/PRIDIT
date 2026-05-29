@@ -1,52 +1,68 @@
-#' Calculate the ridit values for a matrix
+#' Compute ridit scores
 #'
-#' This function takes a matrix of data and returns the matrix transformed 
-#' as ridit values.
+#' Transforms a data frame of numeric indicators into ridit scores on the
+#' interval \eqn{(-1, 1)} using the empirical cumulative distribution of each
+#' column across the reference population.  A score of zero indicates a value
+#' exactly at the median; positive scores indicate above-median values.
 #'
-#' @param allrawdata A matrix where the first column represents IDs.
-#'   The IDs uniquely identify each row in the matrix.
-#'   The remaining columns contain the data for each ID.
-#' @return A data frame with the following columns:
-#'   \describe{
-#'     \item{ID}{The unique identifier for each row.}
-#'     \item{DataMatrix}{A matrix containing additional data columns.}
-#'   }
+#' The ridit score for observation \eqn{i} on indicator \eqn{j} is
+#' \deqn{B_{ij} = F_j(x_{ij} - \varepsilon) - [1 - F_j(x_{ij})]}
+#' where \eqn{F_j} is the empirical CDF of column \eqn{j} and \eqn{\varepsilon}
+#' is a small constant that makes the lower CDF strictly left-continuous.
+#' This formulation is robust to ties and requires no parametric assumptions.
+#'
+#' Categorical indicators should be expanded into binary dummy columns before
+#' calling \code{ridit()}; each dummy then receives its own ridit transformation
+#' and PRIDIT weight, with sign determined by the data rather than by the
+#' analyst.
+#'
+#' @param data A data frame whose first column is an ID and whose remaining
+#'   columns are numeric indicators.
+#' @return A data frame of the same shape as \code{data} with numeric columns
+#'   replaced by their ridit scores.  The ID column is preserved as-is.
+#'
+#' @references
+#' Bross, I. D. J. (1958). How to use ridit analysis. \emph{Biometrics},
+#' \strong{14}(1), 18--38.
+#'
+#' Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M.
+#' (2002). Fraud classification using principal component analysis of RIDITs.
+#' \emph{Journal of Risk and Insurance}, \strong{69}(3), 341--371.
+#'
+#' @examples
+#' dat <- data.frame(
+#'   id = c("A", "B", "C", "D", "E"),
+#'   x1 = c(0.90, 0.85, 0.89, 1.00, 0.89),
+#'   x2 = c(0.99, 0.92, 0.90, 1.00, 0.93)
+#' )
+#' ridit(dat)
+#'
 #' @export
-ridit <- function(allrawdata) {
-  # Extract ID vector
-  IDvector <- allrawdata[, 1]
-  
-  # Convert rawdata to matrix
-  rawdata <- data.matrix(allrawdata[, 2:ncol(allrawdata)])
-  
-  # Initialize matrices
-  Fmat <- matrix(0, nrow(rawdata), ncol(rawdata))
-  Fmatmin <- matrix(0, nrow(rawdata), ncol(rawdata))
-  Fmatplu <- matrix(0, nrow(rawdata), ncol(rawdata))
-  bmat <- matrix(0, nrow(rawdata), ncol(rawdata))
-  
-  # Compute Fmatplu and Fmatmin
-  for (i in 1:ncol(rawdata)) {
-    Fn <- ecdf(rawdata[, i]) 
-    Fmatplu[, i] <- 1 - Fn(rawdata[, i])
-    Fmatmin[, i] <- Fn(rawdata[, i] - 0.001)  # Make 0.001 the smallest possible increment!
+ridit <- function(data) {
+  if (!is.data.frame(data))
+    stop("`data` must be a data frame.", call. = FALSE)
+  if (ncol(data) < 2L)
+    stop("`data` must have at least one ID column and one numeric column.",
+         call. = FALSE)
+
+  id_col   <- data[[1L]]
+  raw_mat  <- data.matrix(data[, -1L, drop = FALSE])
+  col_nms  <- colnames(raw_mat)
+  n        <- nrow(raw_mat)
+  p        <- ncol(raw_mat)
+
+  bij <- matrix(0.0, nrow = n, ncol = p)
+
+  for (j in seq_len(p)) {
+    x    <- raw_mat[, j]
+    fn   <- stats::ecdf(x)
+    f_lo <- fn(x - 1e-10)   # P(X < x)  -- strictly below
+    f_hi <- fn(x)            # P(X <= x) -- at or below
+    bij[, j] <- f_lo - (1 - f_hi)   # ranges in (-1, 1)
   }
-  
-  # Compute Bij
-  Bij <- Fmatmin[, 1:ncol(rawdata)] - Fmatplu[, 1:ncol(rawdata)]
-  
-  # Convert Bij to a data frame
-  for (j in 1:ncol(Bij)) {
-    Bij.df <- data.frame(Bij[, j])
-    Bij.vec <- data.matrix(Bij.df)
-    Bij.vec[is.na(Bij.vec)] <- 0
-    Bij[, j] <- Bij.vec
-  }
-  
-  # Create Bij.data.frame with appropriate column names
-  Bij.data.frame <- data.frame(Bij)
-  colnames(Bij.data.frame) <- colnames(allrawdata[, 2:ncol(allrawdata)])
-  Bij.data.frame <- data.frame(Claim.ID = IDvector, Bij.data.frame)
-  
-  return(Bij.data.frame)
+
+  out           <- as.data.frame(bij)
+  colnames(out) <- col_nms
+  out           <- cbind(data[1L], out)
+  out
 }

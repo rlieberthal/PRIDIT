@@ -1,67 +1,54 @@
-#' Calculate the PRIDIT scores for a ridit matrix
+#' Compute PRIDIT scores
 #'
-#' This function takes a matrix of data and returns the matrix transformed 
-#' as ridit values.
+#' Applies a vector of PRIDIT weights to a ridit-scored data frame and returns
+#' a composite score in \eqn{(-1, 1)} for each observation.  The score is
+#' normalised by the largest eigenvalue so that the mean score is zero by
+#' construction.
 #'
-#' @param riditscores A matrix where the first column represents IDs.
-#'   The IDs uniquely identify each row in the matrix.
-#'   The remaining columns contain the ridit scores for each ID. # Inline comment
-#' @param id_vector A vector of IDs.
-#' @param weightvec A vector of PRIDIT weights.
-#' @return A data frame with the following columns:
-#'   \describe{
-#'     \item{ID}{The unique identifier for each row.}
-#'     \item{ScoreMatrix}{A matrix containing PRIDIT scores for each 
-#'     observation.}
-#'   }
+#' @param ridit_data A data frame returned by \code{\link{ridit}}: first column
+#'   is the ID, remaining columns are ridit scores.
+#' @param id_vector A vector of observation identifiers (same length and order
+#'   as the rows of \code{ridit_data}).
+#' @param weight_vec A named numeric vector of PRIDIT weights returned by
+#'   \code{\link{PRIDITweight}}.
+#' @return A data frame with columns \code{id} and \code{PRIDITscore}.
+#'
+#' @seealso \code{\link{ridit}}, \code{\link{PRIDITweight}}, \code{\link{pridit}}
+#'
+#' @examples
+#' dat <- data.frame(
+#'   id = c("A", "B", "C", "D", "E"),
+#'   x1 = c(0.90, 0.85, 0.89, 1.00, 0.89),
+#'   x2 = c(0.99, 0.92, 0.90, 1.00, 0.93)
+#' )
+#' rs  <- ridit(dat)
+#' wts <- PRIDITweight(rs)
+#' PRIDITscore(rs, dat$id, wts)
+#'
 #' @export
-PRIDITscore <- function(riditscores, id_vector, weightvec)	{
-  # riditscores should have ID in the first column
-  # Convert riditscores to matrix
-  Bijmatrix <- data.matrix(riditscores[,2:ncol(riditscores)])
-  
-  # Transpose Bijmatrix
-  Bijtrans <- t(Bijmatrix)
-  
-  # Calculate Bijsq
-  Bijsq <- Bijtrans %*% Bijmatrix
-  
-  # Calculate Bijss
-  Bijss <- diag(Bijsq)
-  
-  # Calculate Bijsum
-  Bijsum <- sqrt(Bijss)
-  
-  # Create summat matrix
-  summat <- t(matrix(Bijsum,ncol(Bijmatrix),nrow(Bijmatrix)))
-  
-  # Create weightmat matrix
-  weightmat <- t(matrix(weightvec,ncol(Bijmatrix),nrow(Bijmatrix)))
-  
-  # Normalize Bijmatrix by summat
-  Bijnorm <- Bijmatrix/summat
-  
-  # Perform principal component analysis
-  pc <- princomp(Bijmatrix, cor=TRUE)
-  
-  # Calculate maxeigval
-  maxeigval <- (pc$sdev[1])^2
-  
-  # Calculate scoremat
-  scoremat <- (weightmat*Bijnorm)/maxeigval
-  
-  # Create templ matrix
-  templ <- matrix(1,ncol(Bijmatrix),1)
-  
-  # Calculate scorevec
-  scorevec <- scoremat %*% templ
-  
-  # Create results.mat matrix
-  results.mat <- matrix(0,nrow(Bijmatrix),2)
-  results.mat[,1] <- id_vector
-  results.mat[,2] <- scorevec
-  
-  # Create results data frame
-  results <- data.frame(Claim.ID=IDvector,PRIDITscore=scorevec)
-  return(results)
+PRIDITscore <- function(ridit_data, id_vector, weight_vec) {
+  if (!is.data.frame(ridit_data))
+    stop("`ridit_data` must be a data frame returned by ridit().", call. = FALSE)
+  if (length(id_vector) != nrow(ridit_data))
+    stop("`id_vector` must have the same length as nrow(ridit_data).",
+         call. = FALSE)
+
+  bij_mat  <- data.matrix(ridit_data[, -1L, drop = FALSE])
+  p        <- ncol(bij_mat)
+
+  # Column norms for normalisation
+  col_norms <- sqrt(colSums(bij_mat^2))
+  col_norms[col_norms == 0] <- 1          # guard against zero-variance cols
+  bij_norm  <- sweep(bij_mat, 2L, col_norms, "/")
+
+  # Largest eigenvalue (same PCA used in PRIDITweight)
+  pc        <- stats::princomp(bij_mat, cor = TRUE)
+  max_eigval <- pc$sdev[1L]^2
+
+  weight_mat <- matrix(weight_vec, nrow = nrow(bij_mat), ncol = p,
+                       byrow = TRUE)
+  score_vec  <- rowSums(weight_mat * bij_norm) / max_eigval
+
+  data.frame(id = id_vector, PRIDITscore = score_vec,
+             stringsAsFactors = FALSE)
 }
