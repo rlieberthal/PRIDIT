@@ -1,68 +1,42 @@
-#' Calculate the PRIDIT weights for a ridit matrix
+#' Compute PRIDIT weights
 #'
-#' This function takes a ridit-scored matrix and returns PRIDIT weights for
-#' each variable as a vector using Principal Component Analysis.
+#' Computes the PRIDIT weight vector from a ridit-scored data frame.  Weights
+#' are the loadings of the first principal component of the ridit matrix,
+#' scaled by the column norms of that matrix.  The sign of the weight vector
+#' is arbitrary (a property of PCA); pass the result to \code{\link{pridit}}
+#' rather than using this function directly if automatic sign correction is
+#' desired.
 #'
-#' @param riditscores A data frame where the first column represents IDs.
-#'   The IDs uniquely identify each row in the matrix.
-#'   The remaining columns contain the ridit scores for each ID.
-#' @return A numeric vector containing PRIDIT weights for each variable.
+#' @param ridit_data A data frame returned by \code{\link{ridit}}: first column
+#'   is the ID, remaining columns are ridit scores.
+#' @return A named numeric vector of PRIDIT weights, one per indicator column.
+#'
+#' @seealso \code{\link{ridit}}, \code{\link{PRIDITscore}}, \code{\link{pridit}}
+#'
 #' @examples
-#' # Create sample data and calculate ridit scores first
-#' test_data <- data.frame(
-#'   ID = c("A", "B", "C", "D", "E"),
-#'   var1 = c(0.9, 0.85, 0.89, 1.0, 0.89),
-#'   var2 = c(0.99, 0.92, 0.90, 1.0, 0.93),
-#'   var3 = c(1.0, 0.99, 0.98, 1.0, 0.99)
+#' dat <- data.frame(
+#'   id = c("A", "B", "C", "D", "E"),
+#'   x1 = c(0.90, 0.85, 0.89, 1.00, 0.89),
+#'   x2 = c(0.99, 0.92, 0.90, 1.00, 0.93)
 #' )
+#' rs  <- ridit(dat)
+#' PRIDITweight(rs)
 #'
-#' # First calculate ridit scores
-#' ridit_result <- ridit(test_data)
-#'
-#' # Then calculate PRIDIT weights
-#' weights <- PRIDITweight(ridit_result)
-#' print(weights)
-#'
-#' @references
-#' Brockett, P. L., Derrig, R. A., Golden, L. L., Levine, A., & Alpert, M. (2002).
-#' Fraud classification using principal component analysis of RIDITs.
-#' Journal of Risk and Insurance, 69(3), 341-371.
 #' @export
-#' @importFrom stats princomp
-PRIDITweight <- function(riditscores) {
-  # Convert riditscores to matrix
-  Bijmatrix <- data.matrix(riditscores[, 2:ncol(riditscores)])
+PRIDITweight <- function(ridit_data) {
+  if (!is.data.frame(ridit_data))
+    stop("`ridit_data` must be a data frame returned by ridit().", call. = FALSE)
 
-  # Transpose Bijmatrix
-  Bijtrans <- t(Bijmatrix)
+  bij_mat <- data.matrix(ridit_data[, -1L, drop = FALSE])
 
-  # Calculate Bijsq
-  Bijsq <- Bijtrans %*% Bijmatrix
+  if (nrow(bij_mat) <= ncol(bij_mat))
+    stop("PRIDIT requires more observations than indicators (n > p).",
+         call. = FALSE)
 
-  # Calculate Bijss
-  Bijss <- diag(Bijsq)
+  pc         <- stats::princomp(bij_mat, cor = TRUE)
+  max_eigvec <- pc$loadings[, 1L]
+  weight_vec <- max_eigvec * pc$sdev[1L]
 
-  # Calculate Bijsum
-  Bijsum <- sqrt(Bijss)
-
-  # Create summat matrix
-  summat <- t(matrix(Bijsum, ncol(Bijmatrix), nrow(Bijmatrix)))
-
-  # Normalize Bijmatrix by summat
-  Bijnorm <- Bijmatrix / summat
-
-  # Perform principal component analysis
-  pc <- princomp(Bijmatrix, cor = TRUE)
-
-  # Calculate maxeigval
-  maxeigval <- (pc$sdev[1])^2
-
-  # Extract the first principal component vector
-  maxeigvec <- pc$load[, 1]
-
-  # Calculate weightvec
-  weightvec <- maxeigvec * pc$sdev[1]
-
-  # Return the weightvec
-  return(weightvec)
+  names(weight_vec) <- colnames(bij_mat)
+  weight_vec
 }
